@@ -4,12 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--
 mybatis的具体的dao对应的配置文件，类似于那个impl
-
 namespace要和我们的dao的接口进行绑定
 -->
 <mapper namespace="com.xs.dao.BookDao">
-
-
     <!--CRUD都提供了标准的标签
         C:create
         R:retrieve
@@ -17,26 +14,87 @@ namespace要和我们的dao的接口进行绑定
         D:delete
         增删改查
     -->
-
     <!--对于select而言，我们要通知mybatis，你帮我封装成我指定的数据类型
         list集合（如果你要查询的结果是一个集合，你描述集合当中的元素的是java类型就可以了。）
         如果你要查询的结果就是一个普通的java对象，resultType直接写对应的pojo就可以了。
     -->
-    //查询
+    <!--查询-->
     <select id="bookList" resultType="com.xs.entity.Book">
       select * from book
     </select>
-    //修改
+    <!-- &lt;!&ndash;新增&ndash;&gt;
+     <insert id="bookInsert">
+         insert into book values
+         (#{id},#{ISBN },#{name},#{price},#{discount},#{publisher});
+     </insert>-->
+    <!--修改-->
+    <!-- <update id="bookUpdate">
+         update book set ISBN=#{ISBN},name=#{name},price=#{price},discount=#{discount},publisher=#{publisher}
+         where id=#{id}
+     </update>-->
+    <!--删除-->
+    <!-- <delete id="bookDelete">
+         delete from book where id=#{id}
+     </delete>-->
+
+    <!--动态SQL语句查询-->
+    <select id="bookNameAndId" resultType="com.xs.entity.Book">
+        select id,name FROM book
+        <where>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="name!=null">
+                and name =#{name}
+            </if>
+        </where>
+    </select>
+
+    <!--新增使用动态SQL-->
     <insert id="bookInsert">
-        insert into book values(#{id},#{ISBN },#{name},#{price},#{discount},#{publisher});
+        insert into book (id,ISBN,name,price,discount
+        <if test="publisher!=null">
+            ,publisher)
+        </if>
+        values(#{id},#{ISBN },#{name},#{price},#{discount}
+        <if test="publisher!=null">
+            ,#{publisher})
+        </if>
+
     </insert>
-    //修改
+    <!--动态修改-->
     <update id="bookUpdate">
-        update book set ISBN=#{ISBN},name=#{name},price=#{price},discount=#{discount},publisher=#{publisher}
-        where id=#{id}
+        update book
+        <set>
+            <if test="ISBN!=null">
+                ISBN=#{ISBN},
+            </if>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="price!=null">
+                price=#{price},
+            </if>
+            <if test="discount!=null">
+                discount=#{discount},
+            </if>
+            <if test="publisher!=null">
+                publisher=#{publisher}
+            </if>
+        </set>
+        <where>
+            <if test="id!=null">
+                id=#{id}
+            </if>
+        </where>
     </update>
-    //删除
+    <!--动态删除-->
     <delete id="bookDelete">
-        delete from book where id=#{id}
+        delete from book
+        <where>
+            <if test="id!=null">
+                id=#{id}
+            </if>
+        </where>
     </delete>
 </mapper>

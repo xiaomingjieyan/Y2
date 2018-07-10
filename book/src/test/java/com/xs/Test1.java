@@ -40,24 +40,20 @@ public class Test1 {
             sqlSession.clearCache();
         }
     }
-    //根据对象进行新增
+
     @Test
-    public void insert() {
+    //查询所有图书
+    public void booksAll() {
         SqlSession sqlSession = MybatisUtil.getSession();
         BookDao mapper = sqlSession.getMapper(BookDao.class);
-        Book book = new Book();
-        book.setId(111);
-        book.setISBN("65465132");
-        book.setName("张三");
-        book.setPrice(0.87);
-        book.setDiscount(80);
-        book.setPublisher("adsjfdsla");
-        mapper.bookInsert(book);
+        List<Book> list = mapper.bookList();
+        System.out.println(list);
         sqlSession.commit();
         if (sqlSession != null) {
-            sqlSession.clearCache();
+            sqlSession.close();
         }
     }
+
     //根据Id进行修改
     @Test
     public void update() {
@@ -86,6 +82,76 @@ public class Test1 {
         int id = 1;
         int row = mapper.bookDelete(id);
         System.out.println("影响的行数:" + row);
+        sqlSession.commit();
+        if (sqlSession != null) {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    //动态根据ID和Name进行查询
+    public void booksIdAndName() {
+        SqlSession sqlSession = MybatisUtil.getSession();
+        BookDao mapper = sqlSession.getMapper(BookDao.class);
+        Book book = new Book();
+        book.setId(115);
+        book.setName("张三");
+        List<Book> list = mapper.bookNameAndId(book);
+        System.out.println(list);
+        sqlSession.commit();
+        if (sqlSession != null) {
+            sqlSession.close();
+        }
+
+    }
+
+    //根据对象进行新增
+    @Test
+    public void insert() {
+        SqlSession sqlSession = MybatisUtil.getSession();
+        BookDao mapper = sqlSession.getMapper(BookDao.class);
+        Book book = new Book();
+        book.setId(117);
+        book.setISBN("65465132");
+        book.setName("张三");
+        book.setPrice(0.87);
+        book.setDiscount(80);
+        book.setPublisher("adsjfdsla");
+        mapper.bookInsert(book);
+        sqlSession.commit();
+        if (sqlSession != null) {
+            sqlSession.clearCache();
+        }
+    }
+
+    //动态SQL修改
+    @Test
+    public void updateBook() {
+        SqlSession sqlSession = MybatisUtil.getSession();
+        BookDao mapper = sqlSession.getMapper(BookDao.class);
+        Book book = new Book();
+        book.setId(2);
+        book.setISBN("654613132");
+        book.setName("haha哈哈");
+        book.setPrice(54);
+        book.setDiscount(0.8);
+        book.setPublisher("adsfdasfdsada");
+        int row = mapper.bookUpdate(book);
+        System.out.println("影响行数" + row);
+        sqlSession.commit();
+        if (sqlSession != null) {
+            sqlSession.close();
+        }
+    }
+
+    //动态按照Id进行删除
+    @Test
+    public void deleteBookAsIdAndName() {
+        SqlSession sqlSession = MybatisUtil.getSession();
+        BookDao mapper = sqlSession.getMapper(BookDao.class);
+        int result = 117;
+        int row = mapper.bookDelete(result);
+        System.out.println("影响的行数：" + row);
         sqlSession.commit();
         if (sqlSession != null) {
             sqlSession.close();
