@@ -19,5 +19,6 @@
     </environments>
     <mappers>
         <mapper resource="mappers/BookMappers.xml"/>
+        <mapper resource="mappers/AuthorAndBookMapper.xml"/>
     </mappers>
 </configuration>

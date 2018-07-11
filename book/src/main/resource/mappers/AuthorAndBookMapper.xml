@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.dao.BookDao">
+    <resultMap id="bookAndAuthors" type="com.xs.entity.Author">
+        <id property="id" column="author_id"/>
+        <result property="name" column="name"/>
+        <result property="birthday" column="birthday"/>
+        <result property="content" column="content"/>
+        <result property="title" column="title"/>
+        <result property="book_id" column="book_id"/>
+        <!--Author描述，借助collection-->
+        <collection property="bookList" ofType="com.xs.entity.Book">
+            <id property="id" column="id"/>
+            <result property="ISBN" column="ISBN"/>
+            <result property="name" column="name"/>
+            <result property="price" column="price"/>
+            <result property="discount" column="discount"/>
+            <result property="publisher" column="publisher"/>
+        </collection>
+    </resultMap>
+    <select id="bookAndAtour" resultMap="bookAndAuthors">
+        SELECT
+        t1.id,t1.`ISBN`,t1.`name`,t1.`price`,t1.`discount`,t1.`publisher`,t2.`author_id`,t2.`birthday`,t2.`content`
+        ,t2.`title`,t2.`book_id`
+        FROM book t1 LEFT JOIN author t2 ON t1.`id`=t2.`book_id`
+        WHERE t1.`id`=#{id}
+    </select>
+    <select id="AtourId" resultMap="bookAndAuthors">
+    SELECT t1.`author_id`,t1.`birthday`,t1.`name`,t1.`content`,t1.`title`,t2.id,t2.`ISBN`,t2.`name`,t2.`price`,t2.`discount`,t2.`publisher`
+    FROM author t1 LEFT JOIN book t2 ON t1.`book_id`=t2.`id`
+    WHERE t1.`author_id`=#{id};
+    </select>
+</mapper>
